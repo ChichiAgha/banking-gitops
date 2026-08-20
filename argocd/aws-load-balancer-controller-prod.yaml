@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: aws-load-balancer-controller-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://aws.github.io/eks-charts
+    chart: aws-load-balancer-controller
+    targetRevision: 3.5.0
+    helm:
+      valuesObject:
+        clusterName: banking-prod-eks
+        region: eu-west-2
+        replicaCount: 2
+        keepTLSSecret: true
+        serviceAccount:
+          create: true
+          name: aws-load-balancer-controller
+          annotations:
+            eks.amazonaws.com/role-arn: arn:aws:iam::716969407191:role/banking-prod-aws-load-balancer-controller
+        podDisruptionBudget:
+          maxUnavailable: 1
+  destination:
+    name: banking-prod
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
