@@ -15,6 +15,7 @@ spec:
         region: eu-west-2
         vpcId: vpc-075d5edc020a937b2
         replicaCount: 2
+        keepTLSSecret: true
         serviceAccount:
           create: true
           name: aws-load-balancer-controller

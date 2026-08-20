@@ -225,6 +225,10 @@ spec:
               mountPath: /usr/share/nginx/html/config.js
               subPath: config.js
               readOnly: true
+            - name: frontend-config
+              mountPath: /etc/nginx/proxy_params
+              subPath: proxy_params
+              readOnly: true
           ports:
             - containerPort: {{ .Values.service.frontendPort }}
           readinessProbe:

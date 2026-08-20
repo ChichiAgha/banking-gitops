@@ -25,6 +25,8 @@ ingress:
 
 externalSecrets:
   awsSecretPath: arn:aws:secretsmanager:eu-west-2:716969407191:secret:rds!db-8ca613dd-664d-4719-9ab0-45556040ad8e-vP4MGr
+  databaseHost: banking-dev-postgres.cb6qu6kms4tr.eu-west-2.rds.amazonaws.com
+  databasePort: "5432"
 
 config:
   frontendOrigins: https://bank.creativity-is-wealth.co.uk
@@ -36,3 +38,7 @@ frontendConfig:
   userApiUrl: /api/usersvc
   transactionApiUrl: /api/txsvc
   activityApiUrl: /api/activitysvc
+replicaCount: 1
+
+autoscaling:
+  enabled: false
