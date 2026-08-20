@@ -30,8 +30,6 @@ spec:
             protocol: PLAINTEXT
           controller:
             protocol: PLAINTEXT
-        sasl:
-          enabledMechanisms: ""
   destination:
     server: https://kubernetes.default.svc
     namespace: banking
