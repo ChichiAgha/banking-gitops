@@ -58,6 +58,17 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: monitoring-dev-grafana
+      jsonPointers:
+        - /data/admin-password
+    - group: apps
+      kind: Deployment
+      name: monitoring-dev-grafana
+      jsonPointers:
+        - /spec/template/metadata/annotations/checksum~1secret
   syncPolicy:
     automated:
       prune: true
@@ -65,3 +76,4 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+      - RespectIgnoreDifferences=true
