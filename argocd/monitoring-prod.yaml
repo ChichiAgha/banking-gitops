@@ -56,7 +56,7 @@ spec:
         prometheus-node-exporter:
           enabled: true
   destination:
-    name: banking-prod
+    server: https://kubernetes.default.svc
     namespace: monitoring
   ignoreDifferences:
     - group: ""

@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: banking-prod
+  server: https://kubernetes.default.svc
   namespace: argocd
 spec:
   project: default
@@ -17,5 +17,5 @@ spec:
       targetRevision: main
       ref: values
   destination:
-    name: banking-prod
+    server: https://kubernetes.default.svc
     namespace: banking-prod

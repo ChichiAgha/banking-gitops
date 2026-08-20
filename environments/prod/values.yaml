@@ -12,16 +12,16 @@ ingress:
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/certificate-arn: replace-with-prod-acm-certificate-arn
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-west-2:716969407191:certificate/02a0060a-5ef7-4ff4-b4ad-731ca7590dad
     alb.ingress.kubernetes.io/auth-type: cognito
-    alb.ingress.kubernetes.io/auth-idp-cognito: replace-with-terraform-cognito-alb-json
+    alb.ingress.kubernetes.io/auth-idp-cognito: '{"userPoolARN":"arn:aws:cognito-idp:eu-west-2:716969407191:userpool/eu-west-2_EcklGTgbi","userPoolClientID":"30ujjccn16gberik4s814saksq","userPoolDomain":"banking-prod-716969407191"}'
     alb.ingress.kubernetes.io/auth-on-unauthenticated-request: authenticate
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/load-balancer-attributes: deletion_protection.enabled=true
 
 externalSecrets:
-  awsSecretPath: replace-with-terraform-rds-secret-arn
-  databaseHost: replace-with-terraform-rds-endpoint
+  awsSecretPath: arn:aws:secretsmanager:eu-west-2:716969407191:secret:rds!db-54930ea6-c012-4d74-9903-474cd5c136e4-c91xZM
+  databaseHost: banking-prod-postgres.cb6qu6kms4tr.eu-west-2.rds.amazonaws.com
   databasePort: 5432
 
 config:
