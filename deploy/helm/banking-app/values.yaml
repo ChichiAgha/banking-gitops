@@ -22,13 +22,13 @@ config:
   redisHost: "redis"
   redisPort: "6379"
   kafkaBootstrapServers: "kafka:29092"
-  springDatasourceUrl: "jdbc:postgresql://postgres:5432/bankingdb"
 
 externalSecrets:
   enabled: true
   secretStoreRefName: aws-secretsmanager
   secretStoreRefKind: ClusterSecretStore
   awsSecretPath: /bank/dev/app
+  databaseName: bankingdb
   targetSecretName: banking-runtime-secrets
 
 service:

@@ -8,7 +8,6 @@ data:
   KAFKA_BOOTSTRAP_SERVERS: {{ .Values.config.kafkaBootstrapServers | quote }}
   REDIS_HOST: {{ .Values.config.redisHost | quote }}
   REDIS_PORT: {{ .Values.config.redisPort | quote }}
-  SPRING_DATASOURCE_URL: {{ .Values.config.springDatasourceUrl | quote }}
   SPRING_JPA_HIBERNATE_DDL_AUTO: {{ .Values.config.springJpaHibernateDdlAuto | quote }}
 ---
 apiVersion: v1
