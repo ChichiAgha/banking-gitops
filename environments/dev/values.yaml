@@ -6,16 +6,28 @@ images:
   tag: "35940a809dfb3f9c2e2c87d56e747f34c9929f4d"
 
 ingress:
-  host: banking.dev.internal
+  host: bank.creativity-is-wealth.co.uk
   annotations:
-    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-west-2:716969407191:certificate/82fe7895-4a8f-4231-b565-8b82aaf85b13
+    alb.ingress.kubernetes.io/auth-type: cognito
+    alb.ingress.kubernetes.io/auth-idp-cognito: '{"userPoolARN":"arn:aws:cognito-idp:eu-west-2:716969407191:userpool/eu-west-2_xGwwsVZ2y","userPoolClientID":"6jq004m1rfqq9nhou71d5cc1mq","userPoolDomain":"banking-dev-716969407191"}'
+    alb.ingress.kubernetes.io/auth-on-unauthenticated-request: authenticate
+    alb.ingress.kubernetes.io/auth-scope: openid email profile
+    alb.ingress.kubernetes.io/auth-session-cookie: AWSELBAuthSessionCookie
+    alb.ingress.kubernetes.io/auth-session-timeout: "3600"
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz
+    alb.ingress.kubernetes.io/success-codes: "200"
+    alb.ingress.kubernetes.io/load-balancer-attributes: deletion_protection.enabled=false
 
 externalSecrets:
   awsSecretPath: arn:aws:secretsmanager:eu-west-2:716969407191:secret:rds!db-8ca613dd-664d-4719-9ab0-45556040ad8e-vP4MGr
 
 config:
-  frontendOrigins: https://banking.dev.internal
+  frontendOrigins: https://bank.creativity-is-wealth.co.uk
 
 frontendConfig:
   userApiUrl: /api/usersvc
