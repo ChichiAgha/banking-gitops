@@ -6,30 +6,21 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: registry-1.docker.io/bitnamicharts
-    chart: kafka
-    targetRevision: 32.4.3
+    repoURL: https://strimzi.io/charts/
+    chart: strimzi-kafka-operator
+    targetRevision: 1.2.0
     helm:
       valuesObject:
-        fullnameOverride: kafka
-        controller:
-          replicaCount: 1
-          persistence:
-            enabled: false
-          resources:
-            requests:
-              cpu: 100m
-              memory: 256Mi
-            limits:
-              cpu: 500m
-              memory: 768Mi
-        broker:
-          replicaCount: 0
-        listeners:
-          client:
-            protocol: PLAINTEXT
-          controller:
-            protocol: PLAINTEXT
+        replicas: 1
+        watchNamespaces:
+          - banking
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: banking
