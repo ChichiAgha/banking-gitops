@@ -88,6 +88,11 @@ observability:
     environment: dev
     serviceVersion: "1.0.0"
 
+frontendConfig:
+  userApiUrl: /api/usersvc
+  transactionApiUrl: /api/txsvc
+  activityApiUrl: /api/activitysvc
+
 frontendProxy:
   userServiceHost: user-service
   transactionServiceHost: transaction-service

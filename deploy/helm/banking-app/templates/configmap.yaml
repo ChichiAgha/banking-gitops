@@ -10,3 +10,16 @@ data:
   REDIS_PORT: {{ .Values.config.redisPort | quote }}
   SPRING_DATASOURCE_URL: {{ .Values.config.springDatasourceUrl | quote }}
   SPRING_JPA_HIBERNATE_DDL_AUTO: {{ .Values.config.springJpaHibernateDdlAuto | quote }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: banking-frontend-config
+  namespace: {{ .Values.namespace }}
+data:
+  config.js: |
+    window.APP_CONFIG = {
+      USER_API_URL: {{ .Values.frontendConfig.userApiUrl | quote }},
+      TX_API_URL: {{ .Values.frontendConfig.transactionApiUrl | quote }},
+      ACTIVITY_API_URL: {{ .Values.frontendConfig.activityApiUrl | quote }},
+    };

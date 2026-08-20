@@ -193,6 +193,8 @@ spec:
     metadata:
       labels:
         app: banking-frontend
+      annotations:
+        checksum/frontend-config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       containers:
         - name: banking-frontend
@@ -218,6 +220,11 @@ spec:
               value: {{ .Values.frontendProxy.activityServiceHost | quote }}
             - name: ACTIVITY_SERVICE_PORT
               value: {{ .Values.service.activityServicePort | quote }}
+          volumeMounts:
+            - name: frontend-config
+              mountPath: /usr/share/nginx/html/config.js
+              subPath: config.js
+              readOnly: true
           ports:
             - containerPort: {{ .Values.service.frontendPort }}
           readinessProbe:
@@ -228,3 +235,7 @@ spec:
             periodSeconds: 10
           resources:
 {{ toYaml .Values.resources.frontend | indent 12 }}
+      volumes:
+        - name: frontend-config
+          configMap:
+            name: banking-frontend-config

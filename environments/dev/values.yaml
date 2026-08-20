@@ -16,3 +16,8 @@ externalSecrets:
 
 config:
   frontendOrigins: https://banking.dev.internal
+
+frontendConfig:
+  userApiUrl: /api/usersvc
+  transactionApiUrl: /api/txsvc
+  activityApiUrl: /api/activitysvc

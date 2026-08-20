@@ -17,3 +17,8 @@ externalSecrets:
 config:
   frontendOrigins: https://chicorpbank.duckdns.org
   springJpaHibernateDdlAuto: validate
+
+frontendConfig:
+  userApiUrl: /api/usersvc
+  transactionApiUrl: /api/txsvc
+  activityApiUrl: /api/activitysvc
