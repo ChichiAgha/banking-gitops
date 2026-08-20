@@ -1,0 +1,47 @@
+{{- if .Values.databaseMigration.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: banking-database-migration
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "-2"
+data:
+  init.sql: |
+{{ .Files.Get "files/init.sql" | indent 4 }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: banking-database-migration
+  namespace: {{ .Values.namespace }}
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: {{ .Values.databaseMigration.image | quote }}
+          command: ["sh", "-c", "psql \"$DATABASE_URL\" -v ON_ERROR_STOP=1 -f /migrations/init.sql"]
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.externalSecrets.targetSecretName }}
+                  key: DATABASE_URL
+          volumeMounts:
+            - name: migration
+              mountPath: /migrations
+              readOnly: true
+      volumes:
+        - name: migration
+          configMap:
+            name: banking-database-migration
+{{- end }}

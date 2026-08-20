@@ -99,3 +99,6 @@ frontendProxy:
   userServiceHost: user-service
   transactionServiceHost: transaction-service
   activityServiceHost: activity-service
+\ndatabaseMigration:
+  enabled: false
+  image: postgres:16-alpine
