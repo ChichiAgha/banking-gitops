@@ -3,7 +3,7 @@ images:
   transactionService: "716969407191.dkr.ecr.eu-west-2.amazonaws.com/bank-transaction-service"
   activityService: "716969407191.dkr.ecr.eu-west-2.amazonaws.com/bank-activity-service"
   frontend: "716969407191.dkr.ecr.eu-west-2.amazonaws.com/bank-frontend"
-  tag: "a4c6a05aabb52f8f9df6353c2eb06fd1a9d3feff"
+  tag: "35940a809dfb3f9c2e2c87d56e747f34c9929f4d"
 
 ingress:
   host: banking.dev.internal
