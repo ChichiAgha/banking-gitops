@@ -77,7 +77,7 @@ autoscaling:
 
 observability:
   prometheus:
-    enabled: true
+    enabled: false
     scrapeInterval: 30s
     serviceMonitorLabels:
       release: kube-prometheus-stack
