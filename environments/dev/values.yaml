@@ -28,6 +28,9 @@ externalSecrets:
 
 config:
   frontendOrigins: https://bank.creativity-is-wealth.co.uk
+  redisHost: redis-master
+  redisPort: "6379"
+  kafkaBootstrapServers: kafka:9092
 
 frontendConfig:
   userApiUrl: /api/usersvc

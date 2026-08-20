@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kafka-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: registry-1.docker.io/bitnamicharts
+    chart: kafka
+    targetRevision: 32.4.3
+    helm:
+      valuesObject:
+        fullnameOverride: kafka
+        controller:
+          replicaCount: 1
+          persistence:
+            enabled: false
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 768Mi
+        broker:
+          replicaCount: 0
+        listeners:
+          client:
+            protocol: PLAINTEXT
+          controller:
+            protocol: PLAINTEXT
+        sasl:
+          enabledMechanisms: ""
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: banking
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
