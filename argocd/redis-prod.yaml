@@ -19,9 +19,11 @@ spec:
           replicaCount: 3
           persistence:
             enabled: true
+            storageClass: gp3
         master:
           persistence:
             enabled: true
+            storageClass: gp3
           resources:
             requests:
               cpu: 50m
