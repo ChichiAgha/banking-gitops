@@ -22,7 +22,7 @@ spec:
             cpu: 500m
             memory: 512Mi
   destination:
-    name: banking-prod
+    server: https://kubernetes.default.svc
     namespace: banking-prod
   syncPolicy:
     automated:

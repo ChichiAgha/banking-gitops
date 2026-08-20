@@ -23,7 +23,7 @@ spec:
         podDisruptionBudget:
           maxUnavailable: 1
   destination:
-    name: banking-prod
+    server: https://kubernetes.default.svc
     namespace: kube-system
   syncPolicy:
     automated:
