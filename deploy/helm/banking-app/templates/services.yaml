@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: user-service
+  ports:
+    - port: {{ .Values.service.userServicePort }}
+      targetPort: {{ .Values.service.userServicePort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transaction-service
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: transaction-service
+  ports:
+    - port: {{ .Values.service.transactionServicePort }}
+      targetPort: {{ .Values.service.transactionServicePort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: activity-service
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: activity-service
+  ports:
+    - port: {{ .Values.service.activityServicePort }}
+      targetPort: {{ .Values.service.activityServicePort }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: banking-frontend
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: banking-frontend
+  ports:
+    - port: {{ .Values.service.frontendPort }}
+      targetPort: {{ .Values.service.frontendPort }}

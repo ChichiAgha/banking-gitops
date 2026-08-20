@@ -1,0 +1,11 @@
+images:
+  tag: "dev-initial"
+
+ingress:
+  host: dev-bank.example.com
+
+externalSecrets:
+  awsSecretPath: /bank/dev/app
+
+config:
+  frontendOrigin: https://dev-bank.example.com

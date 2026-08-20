@@ -1,0 +1,11 @@
+images:
+  tag: "prod-initial"
+
+ingress:
+  host: bank.example.com
+
+externalSecrets:
+  awsSecretPath: /bank/prod/app
+
+config:
+  frontendOrigin: https://bank.example.com

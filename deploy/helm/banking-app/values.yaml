@@ -1,0 +1,65 @@
+namespace: banking
+
+images:
+  userService: "123456789012.dkr.ecr.us-east-1.amazonaws.com/bank-user-service"
+  transactionService: "123456789012.dkr.ecr.us-east-1.amazonaws.com/bank-transaction-service"
+  activityService: "123456789012.dkr.ecr.us-east-1.amazonaws.com/bank-activity-service"
+  frontend: "123456789012.dkr.ecr.us-east-1.amazonaws.com/bank-frontend"
+  tag: "latest"
+
+ingress:
+  enabled: true
+  className: alb
+  host: bank.example.com
+  scheme: internet-facing
+
+config:
+  frontendOrigin: "https://bank.example.com"
+  springJpaHibernateDdlAuto: "update"
+  redisHost: "redis"
+  redisPort: "6379"
+  kafkaBootstrapServers: "kafka:29092"
+  springDatasourceUrl: "jdbc:postgresql://postgres:5432/bankingdb"
+
+externalSecrets:
+  enabled: true
+  secretStoreRefName: aws-secretsmanager
+  secretStoreRefKind: ClusterSecretStore
+  awsSecretPath: /bank/dev/app
+  targetSecretName: banking-runtime-secrets
+
+service:
+  userServicePort: 8000
+  transactionServicePort: 8080
+  activityServicePort: 8001
+  frontendPort: 80
+
+resources:
+  userService:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 384Mi
+  transactionService:
+    requests:
+      cpu: 150m
+      memory: 384Mi
+    limits:
+      cpu: 750m
+      memory: 768Mi
+  activityService:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 384Mi
+  frontend:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
