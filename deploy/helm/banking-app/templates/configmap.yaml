@@ -4,7 +4,7 @@ metadata:
   name: banking-config
   namespace: {{ .Values.namespace }}
 data:
-  FRONTEND_ORIGIN: {{ .Values.config.frontendOrigin | quote }}
+  FRONTEND_ORIGINS: {{ .Values.config.frontendOrigins | quote }}
   KAFKA_BOOTSTRAP_SERVERS: {{ .Values.config.kafkaBootstrapServers | quote }}
   REDIS_HOST: {{ .Values.config.redisHost | quote }}
   REDIS_PORT: {{ .Values.config.redisPort | quote }}

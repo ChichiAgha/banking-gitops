@@ -3,11 +3,15 @@ kind: Service
 metadata:
   name: user-service
   namespace: {{ .Values.namespace }}
+  labels:
+    app: user-service
+    banking.techbleat.io/metrics: "true"
 spec:
   selector:
     app: user-service
   ports:
-    - port: {{ .Values.service.userServicePort }}
+    - name: http
+      port: {{ .Values.service.userServicePort }}
       targetPort: {{ .Values.service.userServicePort }}
 ---
 apiVersion: v1
@@ -15,11 +19,15 @@ kind: Service
 metadata:
   name: transaction-service
   namespace: {{ .Values.namespace }}
+  labels:
+    app: transaction-service
+    banking.techbleat.io/metrics: "transaction"
 spec:
   selector:
     app: transaction-service
   ports:
-    - port: {{ .Values.service.transactionServicePort }}
+    - name: http
+      port: {{ .Values.service.transactionServicePort }}
       targetPort: {{ .Values.service.transactionServicePort }}
 ---
 apiVersion: v1
@@ -27,11 +35,15 @@ kind: Service
 metadata:
   name: activity-service
   namespace: {{ .Values.namespace }}
+  labels:
+    app: activity-service
+    banking.techbleat.io/metrics: "true"
 spec:
   selector:
     app: activity-service
   ports:
-    - port: {{ .Values.service.activityServicePort }}
+    - name: http
+      port: {{ .Values.service.activityServicePort }}
       targetPort: {{ .Values.service.activityServicePort }}
 ---
 apiVersion: v1
@@ -39,9 +51,12 @@ kind: Service
 metadata:
   name: banking-frontend
   namespace: {{ .Values.namespace }}
+  labels:
+    app: banking-frontend
 spec:
   selector:
     app: banking-frontend
   ports:
-    - port: {{ .Values.service.frontendPort }}
+    - name: http
+      port: {{ .Values.service.frontendPort }}
       targetPort: {{ .Values.service.frontendPort }}

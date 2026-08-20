@@ -1,0 +1,22 @@
+grafana:
+  enabled: true
+  admin:
+    existingSecret: grafana-admin
+    userKey: admin-user
+    passwordKey: admin-password
+alertmanager:
+  enabled: true
+  alertmanagerSpec:
+    replicas: 2
+prometheus:
+  enabled: true
+  prometheusSpec:
+    replicas: 2
+    retention: 15d
+    serviceMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+kube-state-metrics:
+  enabled: true
+prometheus-node-exporter:
+  enabled: true

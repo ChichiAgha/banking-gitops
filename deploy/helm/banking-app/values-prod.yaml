@@ -2,10 +2,13 @@ images:
   tag: "prod"
 
 ingress:
-  host: bank.example.com
+  host: chicorpbank.duckdns.org
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
 
 externalSecrets:
   awsSecretPath: /bank/prod/app
 
 config:
-  frontendOrigin: https://bank.example.com
+  frontendOrigins: https://chicorpbank.duckdns.org

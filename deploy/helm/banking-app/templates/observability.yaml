@@ -1,0 +1,64 @@
+{{- if .Values.observability.prometheus.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: banking-services
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- toYaml .Values.observability.prometheus.serviceMonitorLabels | nindent 4 }}
+spec:
+  namespaceSelector:
+    matchNames: [{{ .Values.namespace }}]
+  selector:
+    matchLabels:
+      banking.techbleat.io/metrics: "true"
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: {{ .Values.observability.prometheus.scrapeInterval }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: banking-transaction-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- toYaml .Values.observability.prometheus.serviceMonitorLabels | nindent 4 }}
+spec:
+  namespaceSelector:
+    matchNames: [{{ .Values.namespace }}]
+  selector:
+    matchLabels:
+      banking.techbleat.io/metrics: "transaction"
+  endpoints:
+    - port: http
+      path: /actuator/prometheus
+      interval: {{ .Values.observability.prometheus.scrapeInterval }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: banking-alerts
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- toYaml .Values.observability.prometheus.ruleLabels | nindent 4 }}
+spec:
+  groups:
+    - name: banking.rules
+      rules:
+        - alert: BankingServiceDown
+          expr: up{namespace="{{ .Values.namespace }}"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Banking service target is down"
+            description: "{{ "{{" }} $labels.service {{ "}}" }} has been unreachable for five minutes."
+        - alert: BankingHighHttp5xxRate
+          expr: sum(rate(http_requests_total{namespace="{{ .Values.namespace }}",status=~"5.."}[5m])) / clamp_min(sum(rate(http_requests_total{namespace="{{ .Values.namespace }}"}[5m])), 1) > 0.05
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Banking HTTP 5xx rate is above 5%"
+{{- end }}

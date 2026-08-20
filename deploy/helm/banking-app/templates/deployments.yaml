@@ -4,7 +4,7 @@ metadata:
   name: user-service
   namespace: {{ .Values.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: user-service
@@ -16,6 +16,14 @@ spec:
       containers:
         - name: user-service
           image: "{{ .Values.images.userService }}:{{ .Values.images.tag }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           ports:
             - containerPort: {{ .Values.service.userServicePort }}
           env:
@@ -24,11 +32,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.externalSecrets.targetSecretName }}
                   key: DATABASE_URL
-            - name: FRONTEND_ORIGIN
+            - name: FRONTEND_ORIGINS
               valueFrom:
                 configMapKeyRef:
                   name: banking-config
-                  key: FRONTEND_ORIGIN
+                  key: FRONTEND_ORIGINS
           readinessProbe:
             httpGet:
               path: /health
@@ -44,7 +52,7 @@ metadata:
   name: transaction-service
   namespace: {{ .Values.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: transaction-service
@@ -56,6 +64,14 @@ spec:
       containers:
         - name: transaction-service
           image: "{{ .Values.images.transactionService }}:{{ .Values.images.tag }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           ports:
             - containerPort: {{ .Values.service.transactionServicePort }}
           env:
@@ -96,11 +112,11 @@ spec:
                   key: REDIS_PORT
             - name: SERVER_PORT
               value: {{ .Values.service.transactionServicePort | quote }}
-            - name: FRONTEND_ORIGIN
+            - name: FRONTEND_ORIGINS
               valueFrom:
                 configMapKeyRef:
                   name: banking-config
-                  key: FRONTEND_ORIGIN
+                  key: FRONTEND_ORIGINS
           readinessProbe:
             httpGet:
               path: /health
@@ -116,7 +132,7 @@ metadata:
   name: activity-service
   namespace: {{ .Values.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: activity-service
@@ -128,6 +144,14 @@ spec:
       containers:
         - name: activity-service
           image: "{{ .Values.images.activityService }}:{{ .Values.images.tag }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           ports:
             - containerPort: {{ .Values.service.activityServicePort }}
           env:
@@ -141,11 +165,11 @@ spec:
                 configMapKeyRef:
                   name: banking-config
                   key: KAFKA_BOOTSTRAP_SERVERS
-            - name: FRONTEND_ORIGIN
+            - name: FRONTEND_ORIGINS
               valueFrom:
                 configMapKeyRef:
                   name: banking-config
-                  key: FRONTEND_ORIGIN
+                  key: FRONTEND_ORIGINS
           readinessProbe:
             httpGet:
               path: /health
@@ -161,7 +185,7 @@ metadata:
   name: banking-frontend
   namespace: {{ .Values.namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: banking-frontend
@@ -173,11 +197,32 @@ spec:
       containers:
         - name: banking-frontend
           image: "{{ .Values.images.frontend }}:{{ .Values.images.tag }}"
+          imagePullPolicy: {{ .Values.images.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          env:
+            - name: USER_SERVICE_HOST
+              value: {{ .Values.frontendProxy.userServiceHost | quote }}
+            - name: USER_SERVICE_PORT
+              value: {{ .Values.service.userServicePort | quote }}
+            - name: TRANSACTION_SERVICE_HOST
+              value: {{ .Values.frontendProxy.transactionServiceHost | quote }}
+            - name: TRANSACTION_SERVICE_PORT
+              value: {{ .Values.service.transactionServicePort | quote }}
+            - name: ACTIVITY_SERVICE_HOST
+              value: {{ .Values.frontendProxy.activityServiceHost | quote }}
+            - name: ACTIVITY_SERVICE_PORT
+              value: {{ .Values.service.activityServicePort | quote }}
           ports:
             - containerPort: {{ .Values.service.frontendPort }}
           readinessProbe:
             httpGet:
-              path: /
+              path: /healthz
               port: {{ .Values.service.frontendPort }}
             initialDelaySeconds: 5
             periodSeconds: 10

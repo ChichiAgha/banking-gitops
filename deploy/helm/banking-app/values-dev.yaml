@@ -2,10 +2,13 @@ images:
   tag: "dev"
 
 ingress:
-  host: dev-bank.example.com
+  host: banking.dev.internal
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
 
 externalSecrets:
   awsSecretPath: /bank/dev/app
 
 config:
-  frontendOrigin: https://dev-bank.example.com
+  frontendOrigins: https://banking.dev.internal

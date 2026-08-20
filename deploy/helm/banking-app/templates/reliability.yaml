@@ -1,0 +1,37 @@
+{{- range $name := list "user-service" "transaction-service" "activity-service" "banking-frontend" }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ $name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: {{ $name }}
+{{- end }}
+{{- if .Values.autoscaling.enabled }}
+{{- range $name := list "user-service" "transaction-service" "activity-service" "banking-frontend" }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ $name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ $name }}
+  minReplicas: {{ $.Values.autoscaling.minReplicas }}
+  maxReplicas: {{ $.Values.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ $.Values.autoscaling.targetCPUUtilizationPercentage }}
+{{- end }}
+{{- end }}

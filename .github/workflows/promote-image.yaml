@@ -1,34 +1,44 @@
-name: promote-image
+name: promote-production
 
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description: Target environment
-        required: true
-        type: choice
-        options:
-          - dev
-          - prod
       imageTag:
-        description: Immutable image tag (git SHA)
+        description: Full Git commit SHA already deployed and validated in dev
         required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   promote:
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
-      - name: Update tag in environment values
+
+      - name: Validate and update production release
+        env:
+          ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
+          IMAGE_TAG: ${{ inputs.imageTag }}
         run: |
-          ENV="${{ github.event.inputs.environment }}"
-          TAG="${{ github.event.inputs.imageTag }}"
-          FILE="environments/${ENV}/values.yaml"
-          sed -i "s/^  tag: .*/  tag: \"${TAG}\"/" "${FILE}"
-      - name: Commit and push
-        run: |
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add environments/
-          git commit -m "promote(${{ github.event.inputs.environment }}): ${{ github.event.inputs.imageTag }}" || echo "No changes"
-          git push
+          [[ "${IMAGE_TAG}" =~ ^[0-9a-f]{40}$ ]] || { echo "imageTag must be a full 40-character Git SHA"; exit 1; }
+          test -n "${ECR_REGISTRY}" || { echo "ECR_REGISTRY repository variable is required"; exit 1; }
+          FILE="environments/prod/values.yaml"
+          sed -i "s|^  userService:.*|  userService: \"${ECR_REGISTRY}/bank-user-service\"|" "${FILE}"
+          sed -i "s|^  transactionService:.*|  transactionService: \"${ECR_REGISTRY}/bank-transaction-service\"|" "${FILE}"
+          sed -i "s|^  activityService:.*|  activityService: \"${ECR_REGISTRY}/bank-activity-service\"|" "${FILE}"
+          sed -i "s|^  frontend:.*|  frontend: \"${ECR_REGISTRY}/bank-frontend\"|" "${FILE}"
+          sed -i "s|^  tag:.*|  tag: \"${IMAGE_TAG}\"|" "${FILE}"
+
+      - name: Open production promotion pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: automation/prod-${{ inputs.imageTag }}
+          delete-branch: true
+          commit-message: "promote(prod): ${{ inputs.imageTag }}"
+          title: "promote(prod): ${{ inputs.imageTag }}"
+          body: "Promotes the exact image set already validated in development."
+          labels: deployment,production

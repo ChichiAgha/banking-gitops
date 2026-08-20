@@ -1,0 +1,30 @@
+datadog:
+  site: datadoghq.com
+  apiKeyExistingSecret: datadog-api-key
+  clusterName: replace-with-cluster-name
+  kubeStateMetricsCore:
+    enabled: true
+  logs:
+    enabled: true
+    containerCollectAll: true
+  apm:
+    portEnabled: true
+  processAgent:
+    processCollection: true
+  prometheusScrape:
+    enabled: true
+    serviceEndpoints: true
+clusterAgent:
+  enabled: true
+  metricsProvider:
+    enabled: true
+agents:
+  containers:
+    agent:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi

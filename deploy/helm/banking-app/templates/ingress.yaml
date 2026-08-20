@@ -5,35 +5,19 @@ metadata:
   name: banking-frontend
   namespace: {{ .Values.namespace }}
   annotations:
-    alb.ingress.kubernetes.io/scheme: {{ .Values.ingress.scheme }}
-    alb.ingress.kubernetes.io/target-type: ip
+    {{- with .Values.ingress.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
+  {{- with .Values.ingress.tls }}
+  tls:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   rules:
-    - host: {{ .Values.ingress.host }}
+    - host: {{ required "ingress.host is required" .Values.ingress.host }}
       http:
         paths:
-          - path: /api/usersvc
-            pathType: Prefix
-            backend:
-              service:
-                name: user-service
-                port:
-                  number: {{ .Values.service.userServicePort }}
-          - path: /api/txsvc
-            pathType: Prefix
-            backend:
-              service:
-                name: transaction-service
-                port:
-                  number: {{ .Values.service.transactionServicePort }}
-          - path: /api/activitysvc
-            pathType: Prefix
-            backend:
-              service:
-                name: activity-service
-                port:
-                  number: {{ .Values.service.activityServicePort }}
           - path: /
             pathType: Prefix
             backend:
