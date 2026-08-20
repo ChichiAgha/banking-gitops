@@ -12,7 +12,7 @@ ingress:
     alb.ingress.kubernetes.io/target-type: ip
 
 externalSecrets:
-  awsSecretPath: /bank/dev/app
+  awsSecretPath: arn:aws:secretsmanager:eu-west-2:716969407191:secret:rds!db-8ca613dd-664d-4719-9ab0-45556040ad8e-vP4MGr
 
 config:
   frontendOrigins: https://banking.dev.internal
