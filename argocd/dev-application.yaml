@@ -6,14 +6,14 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: https://github.com/<org>/<app-or-deploy-repo>.git
+    - repoURL: https://github.com/ChichiAgha/banking-gitops.git
       targetRevision: main
       path: deploy/helm/banking-app
       helm:
         valueFiles:
           - values.yaml
           - $values/environments/dev/values.yaml
-    - repoURL: https://github.com/<org>/<gitops-repo>.git
+    - repoURL: https://github.com/ChichiAgha/banking-gitops.git
       targetRevision: main
       ref: values
   destination:
