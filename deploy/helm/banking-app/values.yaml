@@ -29,6 +29,8 @@ externalSecrets:
   secretStoreRefKind: ClusterSecretStore
   awsSecretPath: /bank/dev/app
   databaseName: bankingdb
+  databaseHost: ""
+  databasePort: "5432"
   targetSecretName: banking-runtime-secrets
 
 service:
