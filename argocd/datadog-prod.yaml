@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: datadog-prod
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://helm.datadoghq.com
+      chart: datadog
+      targetRevision: 3.231.1
+      helm:
+        valuesObject:
+          datadog:
+            site: datadoghq.com
+            apiKeyExistingSecret: datadog-api-key
+            clusterName: banking-prod-eks
+            tags:
+              - env:production
+              - cluster:banking-prod-eks
+            kubeStateMetricsCore:
+              enabled: true
+            logs:
+              enabled: true
+              containerCollectAll: true
+            apm:
+              portEnabled: true
+            processAgent:
+              processCollection: true
+            orchestratorExplorer:
+              enabled: true
+            prometheusScrape:
+              enabled: true
+              serviceEndpoints: true
+          clusterAgent:
+            enabled: true
+            metricsProvider:
+              enabled: false
+          agents:
+            containers:
+              agent:
+                resources:
+                  requests:
+                    cpu: 100m
+                    memory: 256Mi
+                  limits:
+                    cpu: 500m
+                    memory: 512Mi
+    - repoURL: https://github.com/ChichiAgha/banking-gitops.git
+      targetRevision: main
+      path: observability/datadog-prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: datadog
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
